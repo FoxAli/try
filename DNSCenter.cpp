@@ -52,10 +52,11 @@ void ReleaseDNSCenter(DNSCenter* center)
 	free(center);
 }
 
-void ResolveDomainName (DNSCenter* center)
+char* ResolveDomainName (DNSCenter* center , char* domainName)
 {
+
 	
-	
+	return NULL;
 }
 
 

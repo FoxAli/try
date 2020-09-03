@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "stdHeader.h"
 #include "DNSCenter.h"
 
 
@@ -16,8 +17,9 @@ int main(int argc,char **argv)
 	
 	DNSCenter* pDNSCenter = CreateDNSCenter();
 
-	ResolveDomainName(pDNSCenter);
-	
+	ReleaseDNSCenter(pDNSCenter);
+
+	LOG(DEBUG , "a(%s)a" , "~~");
 	
 	return 0;
 }

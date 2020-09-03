@@ -6,7 +6,7 @@ struct DNSCenter;
 
 DNSCenter* CreateDNSCenter();
 void ReleaseDNSCenter(DNSCenter* center);
-void ResolveDomainName (DNSCenter* center);
+char* ResolveDomainName (DNSCenter* center , char* domainName);
 
 
 
