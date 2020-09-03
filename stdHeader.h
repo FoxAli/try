@@ -6,11 +6,11 @@
 
 #define MAX_LOG_SIZE 1024
 
-#define DEBUG "debug"
-#define INFO  "info"
-#define WARN  "warn"
-#define ERROR "error"
-#define FATAL "fatal"
+#define LOG_DEBUG "debug"
+#define LOG_INFO  "info"
+#define LOG_WARN  "warn"
+#define LOG_ERROR "error"
+#define LOG_FATAL "fatal"
 
 
 
@@ -23,7 +23,7 @@
 	time_t now = time(NULL); \
 	char buf[32]; \
 	strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now)); \
-	printf("[%s][%s]\n" ,buf , formatlog); \
+	printf("[%s][%s][%s]\n" ,level ,buf , formatlog); \
 	}
 
 
