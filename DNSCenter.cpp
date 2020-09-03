@@ -44,7 +44,7 @@ void ReleaseDNSCenter(DNSCenter* center)
 	while(pNode != NULL)
 	{
 		DNSNode* last = pNode;
-		pNode == pNode->Prior;
+		pNode = pNode->Prior;
 		free(last);
 		last = NULL;
 	}

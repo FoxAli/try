@@ -20,6 +20,7 @@ int main(int argc,char **argv)
 	ReleaseDNSCenter(pDNSCenter);
 
 	LOG(DEBUG , "a(%s)a" , "~~");
+	LOG(INFO , "BB")
 	
 	return 0;
 }
