@@ -24,6 +24,10 @@ struct DNSCenter
 {
 	DNSNode* First;
 	pthread_mutex_t* pMutex;
+
+
+	char* pTempDomain;
+	
 };
 
 
@@ -57,6 +61,9 @@ void ReleaseDNSCenter(DNSCenter* center)
 	while(pNode != NULL)
 	{
 		DNSNode* last = pNode;
+		free(last->Domain);
+		free(last->HostIP);
+		
 		pNode = pNode->Prior;
 		free(last);
 		last = NULL;
@@ -86,7 +93,44 @@ static char* FindHostIP(DNSCenter* center ,char* domain)
 
 void DNS_CallBack(int result, char type, int count, int ttl, void *addresses, void *arg)
 {
+	LOG(LOG_DEBUG , "DNS_CallBack in");
 	
+	DNSCenter* center = (DNSCenter*)arg;
+	pthread_mutex_lock(center->pMutex);
+
+	if(NULL == center->First)
+	{
+		LOG(LOG_DEBUG , "DNS_CallBack first [%s][%s]"
+		    , center->pTempDomain
+		    , addresses);
+		
+		center->First = (DNSNode*)malloc(sizeof(DNSNode));
+		memset(center->First , 0 , sizeof(DNSNode));
+
+		center->First->Domain = strdup(center->pTempDomain);
+		center->First->HostIP = strdup((char*)addresses);
+	}
+	else
+	{
+		LOG(LOG_DEBUG , "DNS_CallBack tail");
+		
+		DNSNode* pLast = center->First;
+		while(NULL != pLast->Next)
+		{
+			pLast = pLast->Next;
+		}
+
+		pLast->Next = (DNSNode*)malloc(sizeof(DNSNode));
+		memset(pLast->Next , 0 , sizeof(DNSNode));
+
+		pLast->Next->Domain = strdup(center->pTempDomain);
+		pLast->Next->HostIP = strdup((char*)addresses);
+	}
+	
+		
+	pthread_mutex_unlock(center->pMutex);
+
+	LOG(LOG_DEBUG , "DNS_CallBack out");
 }
 
 char* ResolveDomainName (DNSCenter* center , char* domainName)
@@ -94,16 +138,23 @@ char* ResolveDomainName (DNSCenter* center , char* domainName)
 	bool once = false;
 	while(1)
 	{
+		LOG(LOG_DEBUG , "ResolveDomainName while(1)");
+		
+		pthread_mutex_lock(center->pMutex);
 		char* existIP = FindHostIP(center , domainName);
 		if(NULL != existIP)
 		{
 			return existIP;
 		}
-
+		pthread_mutex_unlock(center->pMutex);
 
 		if(!once)
 		{
+			LOG(LOG_DEBUG , "ResolveDomainName once");
+			
 			once = true; 
+
+			center->pTempDomain = domainName; //save for call back function
 			
 			event_base * base = event_init();
 			evdns_init();
