@@ -8,7 +8,7 @@
 
 int main(int argc,char **argv)
 {
-	const char* seed = "https://www.163.com/";
+	char* seed = "https://www.163.com/";
 
 	char path[256] = {0};
 	char* pPath = getcwd(path , 256);
@@ -17,6 +17,8 @@ int main(int argc,char **argv)
 	
 	DNSCenter* pDNSCenter = CreateDNSCenter();
 
+	char* hostIP = ResolveDomainName(pDNSCenter , seed);
+	
 	ReleaseDNSCenter(pDNSCenter);
 
 	LOG(LOG_DEBUG , "a(%s)a" , "~~");
