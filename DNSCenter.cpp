@@ -12,7 +12,7 @@ struct DNSNode
 	DNSNode* Prior;
 
 	char* Domain;
-	char* hostIP;
+	char* HostIP;
 };
 
 struct DNSCenter
@@ -52,10 +52,33 @@ void ReleaseDNSCenter(DNSCenter* center)
 	free(center);
 }
 
+
+static char* FindHostIP(DNSCenter* center ,char* domain)
+{
+	DNSNode* node = center->First;
+	while(NULL != node)
+	{
+		if(0 == strcmp(node->Domain , domain))
+		{
+			return node->HostIP;
+		}
+		
+		node = node->Next;
+	}
+
+	return NULL;
+}
+
 char* ResolveDomainName (DNSCenter* center , char* domainName)
 {
+	char* existIP = FindHostIP(center , domainName);
+	if(NULL != existIP)
+	{
+		return existIP;
+	}
 
 	
+		
 	return NULL;
 }
 
