@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <event.h>
+#include <evdns.h>
 
 
 
@@ -18,6 +20,8 @@ struct DNSNode
 struct DNSCenter
 {
 	DNSNode* First;
+
+	
 };
 
 
@@ -69,6 +73,11 @@ static char* FindHostIP(DNSCenter* center ,char* domain)
 	return NULL;
 }
 
+void DNS_CallBack(int result, char type, int count, int ttl, void *addresses, void *arg)
+{
+	
+}
+
 char* ResolveDomainName (DNSCenter* center , char* domainName)
 {
 	char* existIP = FindHostIP(center , domainName);
@@ -77,10 +86,18 @@ char* ResolveDomainName (DNSCenter* center , char* domainName)
 		return existIP;
 	}
 
-	
+	event_base * base = event_init();
+	evdns_init();
+	evdns_resolve_ipv4(domainName, 0, DNS_CallBack, center);
+	event_dispatch();
+	event_base_free(base);
+
+
 		
 	return NULL;
 }
+
+
 
 
 
