@@ -93,7 +93,14 @@ static char* FindHostIP(DNSCenter* center ,char* domain)
 
 void DNS_CallBack(int result, char type, int count, int ttl, void *addresses, void *arg)
 {
-	LOG(LOG_DEBUG , "DNS_CallBack in");
+	LOG(LOG_DEBUG , "DNS_CallBack in result:%d count:%d ", result , count);
+
+	if(result != DNS_ERR_NONE || 0 == count)
+	{
+		event_loopexit(NULL); // not safe for multithreads
+		return;
+	}
+
 	
 	DNSCenter* center = (DNSCenter*)arg;
 	pthread_mutex_lock(center->pMutex);
@@ -127,9 +134,10 @@ void DNS_CallBack(int result, char type, int count, int ttl, void *addresses, vo
 		pLast->Next->HostIP = strdup((char*)addresses);
 	}
 	
-		
+	LOG(LOG_DEBUG , "DNS_CallBack out....");	
 	pthread_mutex_unlock(center->pMutex);
 
+	event_loopexit(NULL); // not safe for multithreads
 	LOG(LOG_DEBUG , "DNS_CallBack out");
 }
 
@@ -152,15 +160,20 @@ char* ResolveDomainName (DNSCenter* center , char* domainName)
 		{
 			LOG(LOG_DEBUG , "ResolveDomainName once");
 			
-			once = true; 
+			//once = true; 
 
 			center->pTempDomain = domainName; //save for call back function
 			
 			event_base * base = event_init();
 			evdns_init();
+			LOG(LOG_DEBUG , "00000000");
 			evdns_resolve_ipv4(domainName, 0, DNS_CallBack, center);
+			LOG(LOG_DEBUG , "11111111");
 			event_dispatch();
+			LOG(LOG_DEBUG , "22222222");
 			event_base_free(base);
+
+			LOG(LOG_DEBUG , "ResolveDomainName once is finished.");
 		}
 
 		sleep(1);
