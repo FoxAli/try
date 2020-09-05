@@ -7,7 +7,6 @@ OBJS=$(patsubst %.cpp,%.o,$(SOURCES))
 CXX:=g++
 OPTIMIZATION?=-O2 -DNDEBUG
 WARNINGS=-Wall
-#WARNINGS=-Wall -Werror
 REAL_CXXFLAGS=$(OPTIMIZATION) $(CXXFLAGS) $(WARNINGS) $(DEBUG) $(PROF) 
 REAL_LDFLAGS=$(LDFLAGS) $(PROF) -rdynamic -lpthread -levent -lcrypt -ldl
 
