@@ -1,13 +1,21 @@
 
+ver=debug
 
 TARGET=husky
 SOURCES=$(wildcard *.cpp)
 OBJS=$(patsubst %.cpp,%.o,$(SOURCES))
 
 CXX:=g++
-OPTIMIZATION?=-O2 -DNDEBUG
-WARNINGS=-Wall
-REAL_CXXFLAGS=$(OPTIMIZATION) $(CXXFLAGS) $(WARNINGS)
+
+ifeq ($(ver) , debug)
+$(info "debug mode.")
+REAL_CXXFLAGS = -O0 -g -Wall
+else
+$(info "release mode")
+ # -DNDEBUG  , compiler will igore ‘assert’
+REAL_CXXFLAGS = -O2 -DNDEBUG -Wall
+endif
+
 REAL_LDFLAGS=$(LDFLAGS) $(PROF) -rdynamic -lpthread -levent -lcrypt -ldl
 
 all:$(TARGET)
