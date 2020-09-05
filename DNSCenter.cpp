@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <event.h>
 #include <evdns.h>
-
+#include <arpa/inet.h>
 
 
 struct DNSNode
@@ -116,7 +116,11 @@ void DNS_CallBack(int result, char type, int count, int ttl, void *addresses, vo
 		memset(center->First , 0 , sizeof(DNSNode));
 
 		center->First->Domain = strdup(center->pTempDomain);
-		center->First->HostIP = strdup((char*)addresses);
+
+		struct in_addr* addrs = (in_addr *)addresses;
+		char* ip = inet_ntoa(addrs[0]);
+		LOG(LOG_DEBUG , "ip:%s" , ip);
+		center->First->HostIP = strdup(ip);
 	}
 	else
 	{
@@ -132,10 +136,13 @@ void DNS_CallBack(int result, char type, int count, int ttl, void *addresses, vo
 		memset(pLast->Next , 0 , sizeof(DNSNode));
 
 		pLast->Next->Domain = strdup(center->pTempDomain);
-		pLast->Next->HostIP = strdup((char*)addresses);
+		
+		struct in_addr* addrs = (in_addr *)addresses;
+		char* ip = inet_ntoa(addrs[0]);
+		LOG(LOG_DEBUG , "ip:%s" , ip);
+		pLast->Next->HostIP = strdup(ip);
 	}
 	
-	LOG(LOG_DEBUG , "DNS_CallBack out....");	
 	pthread_mutex_unlock(center->pMutex);
 
 	event_loopexit(NULL); // not safe for multithreads
