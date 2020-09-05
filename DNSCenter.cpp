@@ -67,6 +67,7 @@ void ReleaseDNSCenter(DNSCenter* center)
 		pNode = pNode->Prior;
 		free(last);
 		last = NULL;
+		
 	}
 
 	
@@ -166,11 +167,8 @@ char* ResolveDomainName (DNSCenter* center , char* domainName)
 			
 			event_base * base = event_init();
 			evdns_init();
-			LOG(LOG_DEBUG , "00000000");
 			evdns_resolve_ipv4(domainName, 0, DNS_CallBack, center);
-			LOG(LOG_DEBUG , "11111111");
 			event_dispatch();
-			LOG(LOG_DEBUG , "22222222");
 			event_base_free(base);
 
 			LOG(LOG_DEBUG , "ResolveDomainName once is finished.");

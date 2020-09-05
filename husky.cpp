@@ -8,8 +8,9 @@
 
 int main(int argc,char **argv)
 {
-	char* seed = "https://www.163.com/";
-
+	//char* seed = "https://www.163.com/";
+	char* seed = "www.163.com";
+	
 	char path[256] = {0};
 	char* pPath = getcwd(path , 256);
 	strcat(pPath , "/download");
