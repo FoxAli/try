@@ -2,10 +2,11 @@
 #include <unistd.h>
 #include <string.h>
 #include <malloc.h>
+#include <stdlib.h>
 
 #include "stdHeader.h"
 #include "DNSCenter.h"
-
+#include "ctype.h"
 
 //http(s)://username:password@api.somesite.com/test/blah?something=123
 struct Url
@@ -87,6 +88,8 @@ int ParseUrlString (Url* pUrl , char* urlString)
 		LOG(LOG_DEBUG , "Directory is %s" , pUrl->Directory);
 	}
 
+	int ret = 0;
+	
 	//find @
 	char* pAt = strchr(urlServer , '@');
 	if(NULL == pAt)
@@ -95,11 +98,30 @@ int ParseUrlString (Url* pUrl , char* urlString)
 		if(NULL == pSemicolon)
 		{
 			pUrl->Domain = strdup(urlServer);
+			pUrl->Port = 80;
 			LOG(LOG_DEBUG , "Url is only domain %s" , pUrl->Domain);
 		}
 		else
 		{
 			int len = pSemicolon - urlServer;
+			char* domain = (char*)malloc(len + 1);
+			memset(domain , 0 , len + 1);
+			strncpy(domain , urlServer , len);
+			pUrl->Domain = domain;
+
+			char* portStr = pSemicolon + 1;
+			//if(0 == isdigit(portStr))
+			if(true)
+			{
+				int port = atoi(portStr);
+				pUrl->Port = port;
+				LOG(LOG_DEBUG , "Url is only domain %s and port is %d." , pUrl->Domain , pUrl->Port);
+			}
+			else
+			{
+				LOG(LOG_DEBUG , "Url port is not digit");
+				ret = -1;
+			}
 			
 		}
 	}
@@ -111,7 +133,7 @@ int ParseUrlString (Url* pUrl , char* urlString)
 	
 	SAFE_FREE(urlServer);
 	
-	return 0;
+	return ret;
 }
 
 void ReleaseUrl(Url* pUrl)
@@ -133,7 +155,8 @@ int main(int argc,char **argv)
 {
 	//char* seed = "https://www.163.com/";
 	//char* seed = "https://www.163.com";
-	char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
+	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
+	char* seed = "https://tech.163.com:90910/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 	SAFE_FREE(pUrl);
