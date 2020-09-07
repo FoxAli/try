@@ -114,8 +114,16 @@ int ParseUrlString (Url* pUrl , char* urlString)
 			if(true)
 			{
 				int port = atoi(portStr);
-				pUrl->Port = port;
-				LOG(LOG_DEBUG , "Url is only domain %s and port is %d." , pUrl->Domain , pUrl->Port);
+				if(port > 0 && port <= 65535)
+				{
+					pUrl->Port = port;
+					LOG(LOG_DEBUG , "Url is only domain %s and port is %d." , pUrl->Domain , pUrl->Port);
+				}
+				else
+				{
+					ret = -1;
+					LOG(LOG_DEBUG , "Url port %d is invalid." , port);
+				}
 			}
 			else
 			{
@@ -156,7 +164,7 @@ int main(int argc,char **argv)
 	//char* seed = "https://www.163.com/";
 	//char* seed = "https://www.163.com";
 	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
-	char* seed = "https://tech.163.com:90910/20/0907/09/FLTOLBIO00097U7T.html";
+	char* seed = "https://tech.163.com:65520/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 	SAFE_FREE(pUrl);
