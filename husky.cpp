@@ -162,6 +162,10 @@ int ParseUrlString (Url* pUrl , char* urlString)
 	else
 	{
 		//igore user and password ~~~~~
+		LOG(LOG_DEBUG , "Igore user and password");
+		
+		char* pDomainPort = pAt + 1;
+		ret = ParseDomainPort(pDomainPort , pUrl);
 
 	}
 
@@ -191,7 +195,8 @@ int main(int argc,char **argv)
 	//char* seed = "https://www.163.com/";
 	//char* seed = "https://www.163.com";
 	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
-	char* seed = "https://tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
+	char* seed = "https://wp:123456@tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
+	//char* seed = "https://tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 	SAFE_FREE(pUrl);
