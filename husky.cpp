@@ -27,7 +27,7 @@ struct Url
 int IsInt(char* p)
 {
 	int ret = 0;
-	while('/0' != *p)
+	while(0 != *p)   // 0 is the tail of c string 
 	{
 		if(*p < '0' || *p > '9')
 		{
@@ -36,6 +36,51 @@ int IsInt(char* p)
 		}
 
 		p++;
+	}
+
+	return ret;
+}
+
+int ParseDomainPort(char* pdomainport , Url* pUrl)
+{
+	int ret = 0;
+	
+	char* pSemicolon = strchr(pdomainport, ':');
+	if(NULL == pSemicolon)
+	{
+		pUrl->Domain = strdup(pdomainport);
+		pUrl->Port = 80;
+		LOG(LOG_DEBUG , "Url is only domain %s" , pUrl->Domain);
+	}
+	else
+	{
+		int len = pSemicolon - pdomainport;
+		char* domain = (char*)malloc(len + 1);
+		memset(domain , 0 , len + 1);
+		strncpy(domain , pdomainport , len);
+		pUrl->Domain = domain;
+
+		char* portStr = pSemicolon + 1;
+		if(0 == IsInt(portStr))
+		{
+			int port = atoi(portStr);
+			if(port > 0 && port <= 65535)
+			{
+				pUrl->Port = port;
+				LOG(LOG_DEBUG , "Url is only domain %s and port is %d." , pUrl->Domain , pUrl->Port);
+			}
+			else
+			{
+				ret = -1;
+				LOG(LOG_DEBUG , "Url port %d is invalid." , port);
+			}
+		}
+		else
+		{
+			LOG(LOG_DEBUG , "Url port is not digit");
+			ret = -1;
+		}
+			
 	}
 
 	return ret;
@@ -112,48 +157,12 @@ int ParseUrlString (Url* pUrl , char* urlString)
 	char* pAt = strchr(urlServer , '@');
 	if(NULL == pAt)
 	{
-		char* pSemicolon = strchr(urlServer , ':');
-		if(NULL == pSemicolon)
-		{
-			pUrl->Domain = strdup(urlServer);
-			pUrl->Port = 80;
-			LOG(LOG_DEBUG , "Url is only domain %s" , pUrl->Domain);
-		}
-		else
-		{
-			int len = pSemicolon - urlServer;
-			char* domain = (char*)malloc(len + 1);
-			memset(domain , 0 , len + 1);
-			strncpy(domain , urlServer , len);
-			pUrl->Domain = domain;
-
-			char* portStr = pSemicolon + 1;
-			//if(0 == isdigit(portStr))
-			if(0 == IsInt(portStr))
-			{
-				int port = atoi(portStr);
-				if(port > 0 && port <= 65535)
-				{
-					pUrl->Port = port;
-					LOG(LOG_DEBUG , "Url is only domain %s and port is %d." , pUrl->Domain , pUrl->Port);
-				}
-				else
-				{
-					ret = -1;
-					LOG(LOG_DEBUG , "Url port %d is invalid." , port);
-				}
-			}
-			else
-			{
-				LOG(LOG_DEBUG , "Url port is not digit");
-				ret = -1;
-			}
-			
-		}
+		ret = ParseDomainPort(urlServer , pUrl); 
 	}
 	else
 	{
-		
+		//igore user and password ~~~~~
+
 	}
 
 	
