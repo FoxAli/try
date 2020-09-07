@@ -200,7 +200,8 @@ int main(int argc,char **argv)
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 	SAFE_FREE(pUrl);
-
+	//SAFE_FREE(seed);
+	
 	return 0;
 	
 	char path[256] = {0};
