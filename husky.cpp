@@ -7,7 +7,7 @@
 #include "DNSCenter.h"
 
 
-//http://username:password@api.somesite.com/test/blah?something=123
+//http(s)://username:password@api.somesite.com/test/blah?something=123
 struct Url
 {
 	char* Protocol; //"http" or "https"
@@ -22,18 +22,59 @@ struct Url
 	if(p)free(p); \
 	p = NULL;
 
-Url* ParseUrlString ()
+int ParseUrlString (Url* pUrl , char* urlString)
 {
+	//tram blank , space ~~~~ in the furture.
 	
+	LOG(LOG_DEBUG , "url string:%s" , urlString);
+
+	char* pUrlString = urlString;
+	if(strlen(pUrlString) < 5)
+	{
+		LOG(LOG_DEBUG , "Url string is too short.");
+		return -1;
+	}
+
+        if(0 != strncmp(pUrlString , "http" , 4))
+	{
+		LOG(LOG_DEBUG , "Protocol is not  http(s).");
+		return -1;
+	}
+	
+	if(pUrlString[5] != 's' && pUrlString[5] != ':')
+	{
+		LOG(LOG_DEBUG , "Protocol is not  http(s).");
+		return -1;
+	}
+
+	if('s' == pUrlString[5])
+	{
+		char* protocol = (char*)malloc(5);
+		strcpy(protocol , "http");
+		pUrl->Protocol = protocol;
+	}
+	else
+	{
+		char* protocol = (char*)malloc(4);
+		strcpy(protocol , "https");
+		pUrl->Protocol = protocol;
+	}
+
+	
+	return 0;
 }
 
 void ReleaseUrl(Url* pUrl)
 {
+	if(!pUrl)return;
+	
 	SAFE_FREE(pUrl->Protocol);
 	SAFE_FREE(pUrl->User);
 	SAFE_FREE(pUrl->Password);
 	SAFE_FREE(pUrl->IP);
 	SAFE_FREE(pUrl->Directory);
+
+	SAFE_FREE(pUrl);
 }
 
 
