@@ -29,7 +29,7 @@ int ParseUrlString (Url* pUrl , char* urlString)
 	LOG(LOG_DEBUG , "url string:%s" , urlString);
 
 	char* pUrlString = urlString;
-	if(strlen(pUrlString) < 8)   // 8 is the length of "https://" 
+	if(strlen(pUrlString) < 9)   // 8 is the length of "https://" + 1 
 	{
 		LOG(LOG_DEBUG , "Url string is too short.");
 		return -1;
@@ -42,20 +42,31 @@ int ParseUrlString (Url* pUrl , char* urlString)
 		return -1;
 	}
 
-	if('s' == pUrlString[5])
+	int protocolLength = 0;
+	if('s' == pUrlString[4])
 	{
 		char* protocol = (char*)malloc(5);
 		strcpy(protocol , "http");
 		pUrl->Protocol = protocol;
+
+		protocolLength = 8;
+		int remainingLength = strlen(pUrlString) - protocolLength;
+		LOG(LOG_DEBUG , "Protocol is https and remain length is %d" , remainingLength);
 	}
 	else
 	{
 		char* protocol = (char*)malloc(4);
 		strcpy(protocol , "https");
 		pUrl->Protocol = protocol;
+
+		protocolLength = 7;
+		int remainingLength = strlen(pUrlString) - protocolLength;
+
+		LOG(LOG_DEBUG , "Protocol is http and remain length is %d" , remainingLength);
 	}
 
-	
+	char* pRemainString = pUrlString + protocolLength;
+	LOG(LOG_DEBUG , "Remain string is (%s)" , pRemainString);
 	
 	
 	return 0;
@@ -81,6 +92,11 @@ int main(int argc,char **argv)
 	//char* seed = "https://www.163.com/";
 	//char* seed = "www.163.com";
 	char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
+	Url* pUrl = (Url*)malloc(sizeof(Url));
+	int parseUrlRet = ParseUrlString(pUrl , seed);
+	SAFE_FREE(pUrl);
+
+	return 0;
 	
 	char path[256] = {0};
 	char* pPath = getcwd(path , 256);
