@@ -67,7 +67,29 @@ int ParseUrlString (Url* pUrl , char* urlString)
 
 	char* pRemainString = pUrlString + protocolLength;
 	LOG(LOG_DEBUG , "Remain string is (%s)" , pRemainString);
+
+	char* urlServerTail = strchr(pRemainString , '/'); 
+	char* urlServer = NULL;
+	if(NULL == urlServerTail)
+	{
+		int length = strlen(pRemainString);
+		LOG(LOG_DEBUG , "Url server length is %d" , length);
+		urlServer = strndup(pRemainString , length);
+		LOG(LOG_DEBUG , "server url is %s" , urlServer);
+	}
+	else
+	{
+		int length = urlServerTail - pRemainString;
+		LOG(LOG_DEBUG , "Url server length (without directory) is %d" , length);
+		urlServer = strndup(pRemainString , length);
+		LOG(LOG_DEBUG , "server url is %s" , urlServer);
+		pUrl->Directory = strdup(pRemainString + length); 
+
+		LOG(LOG_DEBUG , "Directory is %s" , pUrl->Directory);
+	}
+
 	
+	SAFE_FREE(urlServer);
 	
 	return 0;
 }
