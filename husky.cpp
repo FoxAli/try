@@ -24,6 +24,24 @@ struct Url
 	if(p)free(p); \
 	p = NULL;
 
+int IsInt(char* p)
+{
+	int ret = 0;
+	while('/0' != *p)
+	{
+		if(*p < '0' || *p > '9')
+		{
+			ret = -1;
+			break;
+		}
+
+		p++;
+	}
+
+	return ret;
+}
+
+
 int ParseUrlString (Url* pUrl , char* urlString)
 {
 	//tram blank , space ~~~~ in the furture.
@@ -111,7 +129,7 @@ int ParseUrlString (Url* pUrl , char* urlString)
 
 			char* portStr = pSemicolon + 1;
 			//if(0 == isdigit(portStr))
-			if(true)
+			if(0 == IsInt(portStr))
 			{
 				int port = atoi(portStr);
 				if(port > 0 && port <= 65535)
@@ -164,7 +182,7 @@ int main(int argc,char **argv)
 	//char* seed = "https://www.163.com/";
 	//char* seed = "https://www.163.com";
 	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
-	char* seed = "https://tech.163.com:65520/20/0907/09/FLTOLBIO00097U7T.html";
+	char* seed = "https://tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 	SAFE_FREE(pUrl);
