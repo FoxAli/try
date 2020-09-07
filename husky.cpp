@@ -182,6 +182,7 @@ void ReleaseUrl(Url* pUrl)
 	SAFE_FREE(pUrl->Protocol);
 	SAFE_FREE(pUrl->User);
 	SAFE_FREE(pUrl->Password);
+	SAFE_FREE(pUrl->Domain);
 	SAFE_FREE(pUrl->IP);
 	SAFE_FREE(pUrl->Directory);
 
@@ -199,7 +200,9 @@ int main(int argc,char **argv)
 	//char* seed = "https://tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
-	SAFE_FREE(pUrl);
+
+	ReleaseUrl(pUrl);
+        //SAFE_FREE(pUrl);
 	//SAFE_FREE(seed);
 	
 	return 0;
