@@ -13,6 +13,7 @@ struct Url
 	char* Protocol; //"http" or "https"
 	char* User;
 	char* Password;
+	char* Domain;
 	char* IP;
 	int Port;
 	char* Directory;
@@ -45,20 +46,18 @@ int ParseUrlString (Url* pUrl , char* urlString)
 	int protocolLength = 0;
 	if('s' == pUrlString[4])
 	{
-		char* protocol = (char*)malloc(5);
-		strcpy(protocol , "http");
-		pUrl->Protocol = protocol;
-
+		pUrl->Protocol = strdup("https");
+		LOG(LOG_DEBUG , "Protocol is %s" ,  pUrl->Protocol);
+		
 		protocolLength = 8;
 		int remainingLength = strlen(pUrlString) - protocolLength;
 		LOG(LOG_DEBUG , "Protocol is https and remain length is %d" , remainingLength);
 	}
 	else
 	{
-		char* protocol = (char*)malloc(4);
-		strcpy(protocol , "https");
-		pUrl->Protocol = protocol;
-
+		pUrl->Protocol = strdup("http");
+		LOG(LOG_DEBUG , "Protocol is %s" ,  pUrl->Protocol);
+		
 		protocolLength = 7;
 		int remainingLength = strlen(pUrlString) - protocolLength;
 
@@ -88,6 +87,27 @@ int ParseUrlString (Url* pUrl , char* urlString)
 		LOG(LOG_DEBUG , "Directory is %s" , pUrl->Directory);
 	}
 
+	//find @
+	char* pAt = strchr(urlServer , '@');
+	if(NULL == pAt)
+	{
+		char* pSemicolon = strchr(urlServer , ':');
+		if(NULL == pSemicolon)
+		{
+			pUrl->Domain = strdup(urlServer);
+			LOG(LOG_DEBUG , "Url is only domain %s" , pUrl->Domain);
+		}
+		else
+		{
+			int len = pSemicolon - urlServer;
+			
+		}
+	}
+	else
+	{
+		
+	}
+
 	
 	SAFE_FREE(urlServer);
 	
@@ -112,7 +132,7 @@ void ReleaseUrl(Url* pUrl)
 int main(int argc,char **argv)
 {
 	//char* seed = "https://www.163.com/";
-	//char* seed = "www.163.com";
+	//char* seed = "https://www.163.com";
 	char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
