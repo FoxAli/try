@@ -29,19 +29,14 @@ int ParseUrlString (Url* pUrl , char* urlString)
 	LOG(LOG_DEBUG , "url string:%s" , urlString);
 
 	char* pUrlString = urlString;
-	if(strlen(pUrlString) < 5)
+	if(strlen(pUrlString) < 8)   // 8 is the length of "https://" 
 	{
 		LOG(LOG_DEBUG , "Url string is too short.");
 		return -1;
 	}
 
-        if(0 != strncmp(pUrlString , "http" , 4))
-	{
-		LOG(LOG_DEBUG , "Protocol is not  http(s).");
-		return -1;
-	}
-	
-	if(pUrlString[5] != 's' && pUrlString[5] != ':')
+        if(0 != strncmp(pUrlString , "http://" , 7) &&
+	   0 != strncmp(pUrlString , "https://" , 8))
 	{
 		LOG(LOG_DEBUG , "Protocol is not  http(s).");
 		return -1;
@@ -60,6 +55,8 @@ int ParseUrlString (Url* pUrl , char* urlString)
 		pUrl->Protocol = protocol;
 	}
 
+	
+	
 	
 	return 0;
 }
