@@ -40,11 +40,21 @@ int Connect(int* sock , char* ip , int port)
 	return 0;
 }
 
+int SendRequest(Url* pUrl)
+{
+	return 0;
+}
+
 
 void DownLoad(Url* pUrl)
 {
 	int respSocket = 0;
-	Connect(&respSocket , pUrl->IP , pUrl->Port);
+	if(0 != Connect(&respSocket , pUrl->IP , pUrl->Port))
+	{
+		return;
+	}
+
+	
 	
 }
 
