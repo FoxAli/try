@@ -185,31 +185,34 @@ int main(int argc,char **argv)
 	//char* seed = "https://www.163.com/";
 	//char* seed = "https://www.163.com";
 	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
-	char* seed = "https://wp:123456@tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
-	//char* seed = "https://tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
+	//char* seed = "https://wp:123456@tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
+	char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 
-	ReleaseUrl(pUrl);
-        //SAFE_FREE(pUrl);
-	//SAFE_FREE(seed);
+	//ReleaseUrl(pUrl);
 	
-	return 0;
+	//return 0;
 	
-	char path[256] = {0};
-	char* pPath = getcwd(path , 256);
-	strcat(pPath , "/download");
-	printf("filePath: %s\n", pPath);
+	//char path[256] = {0};
+	//char* pPath = getcwd(path , 256);
+	//strcat(pPath , "/download");
+	//printf("filePath: %s\n", pPath);
 	
 	DNSCenter* pDNSCenter = CreateDNSCenter();
 
-	char* hostIP = ResolveDomainName(pDNSCenter , seed);
+	char* hostIP = ResolveDomainName(pDNSCenter , pUrl->Domain);
+	pUrl->IP = strdup(hostIP);
 	
 	ReleaseDNSCenter(pDNSCenter);
 
-	LOG(LOG_DEBUG , "a(%s)a" , "~~");
-	LOG(LOG_INFO , "BB")
+
+	DownLoad(pUrl);
+
+
+	ReleaseUrl(pUrl);
 	
+		
 	return 0;
 }
 

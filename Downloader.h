@@ -15,6 +15,6 @@ struct Url
 	char* Directory;
 };
 
-
+void DownLoad(Url* pUrl);
 
 #endif
