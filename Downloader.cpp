@@ -80,6 +80,41 @@ int SendRequest(int* sock, Url* pUrl)
 }
 
 
+
+
+int ReceiveResponse(int* sock , char* responseBody)
+{
+	int len = 0;
+	while (1)
+	{
+		int n = read(*sock, responseBody + len, 1024);
+		if (n < 0)
+		{
+			LOG(LOG_DEBUG, "Fail to receive response.");
+			return -1;
+		}
+		else if (0 == n)
+		{
+			LOG(LOG_DEBUG, "Success to receive response. length: %d " , len);
+
+			FILE* fp = fopen("test.txt", "wb+");
+			fwrite(responseBody, sizeof(char), HTML_MAXLEN, fp);
+			fclose(fp);
+
+			break;
+		}
+		else
+		{
+			
+			len += + n;
+			LOG(LOG_DEBUG, "Receive respnse length %d , total length %d ", n, len);
+		}
+	}
+
+	return 0;
+}
+
+
 void DownLoad(Url* pUrl)
 {
 	int sock = 0;
@@ -93,7 +128,17 @@ void DownLoad(Url* pUrl)
 		return;
 	}
 	
-	
+	char* responseBody = new char[HTML_MAXLEN];
+	memset(responseBody, 0, HTML_MAXLEN * sizeof(char));
+	if (0 != ReceiveResponse(&sock , responseBody))
+	{
+		return;
+	}
+
+
+	delete responseBody;
+	responseBody = NULL;
+
 }
 
 

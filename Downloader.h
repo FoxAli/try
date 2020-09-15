@@ -17,4 +17,6 @@ struct Url
 
 void DownLoad(Url* pUrl);
 
+#define HTML_MAXLEN   1024*1024
+
 #endif
