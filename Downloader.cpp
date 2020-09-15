@@ -7,6 +7,7 @@
 #include <errno.h>
 
 #include "stdHeader.h" 
+#include "ParserResponse.h"
 
 
 int Connect(int* sock , char* ip , int port)
@@ -130,11 +131,12 @@ void DownLoad(Url* pUrl)
 	
 	char* responseBody = new char[HTML_MAXLEN];
 	memset(responseBody, 0, HTML_MAXLEN * sizeof(char));
-	if (0 != ReceiveResponse(&sock , responseBody))
+	if (0 == ReceiveResponse(&sock , responseBody))
 	{
-		return;
+		int findPos;
+		EHyperlinkType hyperlinkType;
+		ParserString(responseBody, &findPos, &hyperlinkType);
 	}
-
 
 	delete responseBody;
 	responseBody = NULL;

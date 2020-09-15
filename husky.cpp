@@ -8,6 +8,7 @@
 #include "DNSCenter.h"
 #include "ctype.h"
 #include "Downloader.h"
+#include "ParserResponse.h"
 
 #define SAFE_FREE(p) \
 	if(p)free(p); \
@@ -182,11 +183,11 @@ void ReleaseUrl(Url* pUrl)
 
 int main(int argc,char **argv)
 {
-	//char* seed = "https://www.163.com/";
+	char* seed = "https://www.163.com/";
 	//char* seed = "https://www.163.com";
 	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
 	//char* seed = "https://wp:123456@tech.163.com:80/20/0907/09/FLTOLBIO00097U7T.html";
-	char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
+	//char* seed = "https://tech.163.com/20/0907/09/FLTOLBIO00097U7T.html";
 	Url* pUrl = (Url*)malloc(sizeof(Url));
 	int parseUrlRet = ParseUrlString(pUrl , seed);
 
@@ -208,6 +209,8 @@ int main(int argc,char **argv)
 
 
 	DownLoad(pUrl);
+
+
 
 
 	ReleaseUrl(pUrl);
