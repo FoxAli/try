@@ -4,7 +4,8 @@
 #include<string.h>
 #include "stdHeader.h"
 
-#define REGEX_HYPERLINK "href=\"(https?:)?\\\\([A-Z]|[a-z]|.|?|&|[0-9]|=)+\""
+//#define REGEX_HYPERLINK "href=\"(https?:)?//[^\"]+\""
+#define REGEX_HYPERLINK		"href=\"(https?:)?//[^\"]+\""
 //#define REGEX_HYPERLINK "href=\"https?:\\\\([A-Z]|[a-z]|.|?|&|[0-9]|=)+\""
 //#define REGEX_HYPERLINK "href="
 //#define REGEX_HYPERLINK "a"
@@ -12,7 +13,7 @@
 //find return 0 , not find return -1
 int ParserString(char* pString , int* findPos , EHyperlinkType* hyperlinkType)
 {
-	char* p = strstr(pString , "href=");
+	char* p = strstr(pString , "href=\"http://");
 	int pos = p - pString;
 	LOG(LOG_DEBUG, "strstr find pos %d ", pos);
 
@@ -20,7 +21,7 @@ int ParserString(char* pString , int* findPos , EHyperlinkType* hyperlinkType)
 	regex_t re;
 
 	//if (regcomp(&re, REGEX_HYPERLINK, REG_NEWLINE| REG_NOSUB) != 0)
-	if (regcomp(&re, REGEX_HYPERLINK , 0) != 0)
+	if (regcomp(&re, REGEX_HYPERLINK , REG_EXTENDED) != 0)
 	{
 		LOG(LOG_DEBUG, "Fail to compile regex.");
 		return -2;
