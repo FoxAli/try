@@ -100,7 +100,13 @@ int main(int argc, char **argv)
 			}
 			else if(events[i].events&EPOLLOUT)
 			{
-				
+				int sockfd = events[i].data.fd;
+				int n = MAXLINE;
+				write(sockfd, line, n);
+
+				ev.data.fd=sockfd;
+				ev.events=EPOLLIN|EPOLLET;
+				epoll_ctl(epfd,EPOLL_CTL_MOD,sockfd,&ev);
 			}
 		}
 	}
