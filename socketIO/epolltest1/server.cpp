@@ -5,12 +5,17 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
 
 #define PORT 60000
 #define LISTENQ 20
+#define MAXLINE 5
 
 int main(int argc, char **argv)
 {
+	char line[MAXLINE];
+	
 	struct epoll_event ev,events[20];
 	int epfd = epoll_create(256);
 
@@ -34,7 +39,7 @@ int main(int argc, char **argv)
 	for(;;)
 	{
 		int nfds = epoll_wait(epfd,events,20,500);
-		printf("epoll_wait return %d" , nfds);
+		printf("epoll_wait return %d \n" , nfds);
 		
 		for(int i=0;i<nfds;++i)
 		{
@@ -45,12 +50,12 @@ int main(int argc, char **argv)
 				int connfd = accept(listenfd,(sockaddr *)&clientaddr, &clilen);
 				if(connfd < 0)
 				{
-					printf("connfd < 0");
+					printf("connfd < 0 \n");
 					exit(1);
 				}
 
 				char* str = inet_ntoa(clientaddr.sin_addr);
-				printf("accapt a connection from  %s" , str);
+				printf("accapt a connection from  %s \n" , str);
 
 				ev.data.fd=connfd;
 				ev.events=EPOLLIN|EPOLLET;
@@ -59,7 +64,39 @@ int main(int argc, char **argv)
 			}
 			else if(events[i].events&EPOLLIN)
 			{
-				
+				printf("EPOLLIN \n");
+				int sockfd = events[i].data.fd;
+				if(sockfd < 0)
+				{
+					printf("EPOLLIN but sockfd < 0 \n");
+					continue;
+				}
+
+				int n = read(sockfd , line , MAXLINE);
+				if(n < 0)
+				{
+					if (errno == ECONNRESET)
+					{
+						close(sockfd);
+						events[i].data.fd = -1;
+					}
+					else
+					{
+						printf("readline error \n");
+					}
+				}
+				else if(0 == n)
+				{
+					close(sockfd);
+					events[i].data.fd = -1;
+				}
+
+				line[n] = '/0';
+				printf("read: %s \n" , line);
+
+				ev.data.fd=sockfd;
+				ev.events = EPOLLOUT|EPOLLET;
+					
 			}
 			else if(events[i].events&EPOLLOUT)
 			{
