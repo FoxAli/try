@@ -11,12 +11,16 @@
 
 (setq semanticdb-default-save-directory "~/.emacs.d/")
 
+(load-theme 'manoj-dark t)
+
 (global-set-key (kbd "C-q") 'semantic-ia-complete-symbol-menu)
 (global-set-key (kbd "C-w") 'semantic-ia-fast-jump)
 
 (semantic-add-system-include "/user/include" 'c++-mode)
 (semantic-add-system-include "/user/include/c++/" 'c++-mode)
 (semantic-add-system-include "/usr/include/c++/7/bits/" 'c++-mode)
+(semantic-add-system-include "/mnt/e/linuxfile/git/try" 'c++-mode)
+
 
 ;(global-set-key(kbd "TAB") 'self-insert-command)
 ;(setq default-tab-width 4)
