@@ -103,7 +103,7 @@ int CEpollServer::Start(int port , string ip)
 				}
 
 				_buffer[n] = '/0';
-				printf("receive:%s \n" , _buffer);
+				printf("receive(%d):%s \n" , n, _buffer);
 				
 			}
 			else if(_events[i].events & EPOLLOUT)

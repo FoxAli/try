@@ -4,6 +4,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include<unistd.h>
+#include <fcntl.h>
+#include<unistd.h>
+
 
 #define SOCKET int
 
@@ -22,6 +25,11 @@ int main(int argc, char *argv[])
 	servaddr.sin_port = htons(6000);
 	inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
 
+	if (fcntl(sock, F_SETFL, fcntl(sock, F_GETFD, 0)|(~O_NONBLOCK)) == -1)
+	{
+		printf("fail to set socket to no block mode.");
+	}
+	
 	int r = connect(sock, (struct sockaddr*)&servaddr , sizeof(servaddr));
 	if(r < 0)
 	{
@@ -36,7 +44,12 @@ int main(int argc, char *argv[])
 	for(int i = 0 ; i < 20 ; ++i)
 	{
 		int ss = send(sock, buffer , 10 , 0);
-		printf("send return: %d \n");
+		printf("send return: %d \n" , ss);
+
+		if(ss < 0)
+		{
+			
+		}
 	}
 
 	close(sock);
