@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 	char buffer[1000 * 1000 * 2];
 	for(int i = 0 ; i < 10 ; ++i)
 	{
-		buffer[i] = i;
+		buffer[i] = i + 49;    //49 is asii '1'
 	}
 
 	
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	for(int i = 0 ; i < 20 ; ++i)
 	{
 		int ss = send(sock, buffer , 10 , 0);
-		printf("send return: %d \n" , ss);
+		printf("send return: (%d)(%s) \n" , ss , buffer);
 
 		sleep(1);
 	}
