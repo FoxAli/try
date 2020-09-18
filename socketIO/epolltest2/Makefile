@@ -13,7 +13,7 @@ REAL_CXXFLAGS = -O0 -g -Wall
 else
 $(info "release mode")
  # -DNDEBUG  , compiler will igore ‘assert’
-REAL_CXXFLAGS = -O2 -DNDEBUG -Wall
+REAL_CXXFLAGS = -O2 -DNDEBUG -Wall 
 endif
 
 REAL_LDFLAGS=$(LDFLAGS) $(PROF) -rdynamic -lpthread -levent -lcrypt -ldl
