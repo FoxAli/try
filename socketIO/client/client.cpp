@@ -40,16 +40,13 @@ int main(int argc, char *argv[])
 		printf("seccess to connect to server: %d \n", r );
 	}
 
-	sleep(2);
+	usleep(50);
 	for(int i = 0 ; i < 20 ; ++i)
 	{
 		int ss = send(sock, buffer , 10 , 0);
 		printf("send return: %d \n" , ss);
 
-		if(ss < 0)
-		{
-			
-		}
+		sleep(1);
 	}
 
 	close(sock);
