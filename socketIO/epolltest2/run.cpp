@@ -4,6 +4,8 @@
 
 int main(int argc, char *argv[])
 {
+	printf("server main function in. \n");
+	
 	const int port = 6000;
 	const string ip = "127.0.0.1";
 
